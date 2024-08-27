@@ -5,7 +5,7 @@ container: "envs/diadumenernaseq.sif"
 rule report:
     input:
         correlation_heatmap=expand("data/processed/DESeq2/DESeq2_{level}/correlation_heatmap_{level}_combined.png", level=config["deseq2level"]),
-        blastn_barplot=expand("data/processed/blastn/{transcriptome}_{db}_barplot.png", transcriptome=config["transcriptome"], db=config["blastndb"]), # This is not working and I don't know why. It might be the way that blast is looking for the database. I separated the nr and nt databases in ~/blast/db so this might break the other pipelines that use the nt database. I have saved the error logs in /home/cmakamure/clyde_diadumene_final/logs/blastn/diadumene_lineata_transcriptome_nt_euk.log
+        blastn_barplot=expand("data/processed/blastn/{transcriptome}_{db}_barplot.png", transcriptome=config["transcriptome"], db=config["blastndb"]), # For blast to work properly, I downloaded the nt_euk database into the data/processed/blastn/db folder, and also downloaded the taxdb into the same folder. For some reason, species search required that I move taxdb.bti and taxdb.btd to the working directory from which the blast command is run i.e. the data/processed/blastn folder
         volcano=expand("data/processed/DESeq2/DESeq2_{level}/{level}_volcano_plot.png", level=config["deseq2level"]),
         diff_heatmap=expand("data/processed/DESeq2/DESeq2_{level}/DESeq2_{level}_heatmap_TMM_combined.png", level=config["deseq2level"]),
         fastqc=expand("data/processed/fastqc/{sample}.merged.SE_trimmed_fastqc.html", sample=config["samples"]),
