@@ -420,23 +420,6 @@ rule supertranscripts:
         """
 
 
-rule supertranscripts_blast:
-    input:
-        fasta=rules.supertranscripts.output.super_fasta
-    output:
-        blastout="test/{transcriptome}_supertranscripts.blastp.outfmt6"
-    params:
-        db=rules.make_blastx_nr_db.output,
-        evalue=config["evalue"],
-        blast_against=config["taxid"]
-    threads: 30
-    log:
-        logfile="logs/supertranscripts_blast_{transcriptome}.log"
-    shell:
-        """
-        diamond blastx -d {params.db} -q {input.fasta} --max-target-seqs 10 -e {params.evalue} --taxonlist {params.blast_against} --threads {threads} -t tmp -o {output.blastout} --outfmt 6 > {log.logfile} 2>&1
-        """
-
 
 # Run FASTQC on the raw data
 rule fastqc:
@@ -476,7 +459,7 @@ rule dexseq:
         """
         cd {params.out_dir} &&
 
-        $TRINITY_HOME/Analysis/SuperTranscripts/DTU/dexseq_wrapper.pl \
+        ../../../scripts/dexseq_wrapper.pl \
         --genes_fasta ../../../{input.fasta} \
         --genes_gtf ../../../{input.gtf} \
         --samples_file ../../../{input.samples} \

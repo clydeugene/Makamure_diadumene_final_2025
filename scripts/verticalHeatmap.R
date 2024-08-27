@@ -23,6 +23,6 @@ H=Heatmap(M[ordr,], name = paste("TPM", sep=""), col = colorRamp2(c(-1.75, -.2, 
 # draw(H)
 # dev.off()
 
-ggsave(paste(Compare, "_heatmap_vertical.png", sep=""), H, width = 8, height = 8, dpi = 300)
+ggsave(paste0(Compare, "_heatmap_vertical.png"), H, width = 8, height = 8, dpi = 300)
 
 write.table(M[ordr,], file="Hclust_TPMTable_2.txt", sep="\t", quote=FALSE)
