@@ -63,7 +63,7 @@ then
 	wait
 	
 	N=1
-	for file in $(ls ../../../../data/processed/salmon/rt*/quant.sf.genes) # Figure out a way to get use the isoform quant.sf files since this is based on the filtered fasta i.e., the longest isoform fasta
+	for file in $(ls ../../../../data/processed/salmon/rt*/quant.sf.genes)
 	do
 		echo Room_$N > gene_filtered_room_TPM_$N.txt
 		awk -F "\t" '{if(NR>1){print $4}}' $file >> gene_filtered_room_TPM_$N.txt
@@ -104,23 +104,4 @@ then
 
 fi
 
-# rm differentially_expressed*with_symbols.txt
 
-# paste *_room_TPM_*.txt > room_TPM_ALL.txt
-# paste *_cold_TPM_*.txt > cold_TPM_ALL.txt
-
-# paste room_TPM_ALL.txt cold_TPM_ALL.txt > vertical_TPM_ALL.txt
-# paste Vertical_TPM_Labels.txt vertical_TPM_ALL.txt > vertical_TPM_ALL+L_unspaced.txt
-
-# awk -F "\t" -v OFS="\t" '{print $0}' vertical_TPM_ALL+L_unspaced.txt > vertical_TPM_ALL+L.txt
-
-# # Sort the vertical_TPM_ALL+L.txt file by the first column
-# 	header=$(head -n 1 vertical_TPM_ALL+L.txt)
-# 	tail -n +2 vertical_TPM_ALL+L.txt | sort -k1,1b > vertical_TPM_ALL+L_sorted.txt
-# 	echo -e "$header\n$(cat vertical_TPM_ALL+L_sorted.txt)" > vertical_TPM_ALL+L_sorted.txt
-
-# join -t $'\t' --header differentially_expressed*.txt vertical_TPM_ALL+L_sorted.txt > vertical_TPM_DE.txt
-
-# Rscript ../../../scripts/verticalHeatmap.R vertical_TPM_DE.txt DE_TPM+LogFold
-
-# echo -e "\nThe script verticalHeatmap.sh in $(pwd) has finished at $(date)\n"
