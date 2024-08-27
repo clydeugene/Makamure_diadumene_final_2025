@@ -1,0 +1,50 @@
+bootstrap: docker
+from: trinityrnaseq/trinityrnaseq:2.15.2
+
+%post
+    apt-get update
+
+    cd /opt/
+    wget https://github.com/weizhongli/cdhit/releases/download/V4.8.1/cd-hit-v4.8.1-2019-0228.tar.gz
+    tar xvf cd-hit-v4.8.1-2019-0228.tar.gz --gunzip
+    rm cd-hit-v4.8.1-2019-0228.tar.gz
+
+    cd cd-hit-v4.8.1-2019-0228
+    make
+    
+    cd cd-hit-auxtools
+    make
+    
+    cd /opt/
+
+    curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/datasets'
+    curl -o dataformat 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/dataformat'
+    chmod +x datasets dataformat
+
+    wget http://github.com/bbuchfink/diamond/releases/download/v2.1.9/diamond-linux64.tar.gz
+    tar xzf diamond-linux64.tar.gz
+    rm diamond-linux64.tar.gz
+
+    wget https://github.com/TransDecoder/TransDecoder/archive/refs/tags/TransDecoder-v5.7.1.zip
+    unzip TransDecoder-v5.7.1.zip
+    rm TransDecoder-v5.7.1.zip
+    mv TransDecoder-TransDecoder-v5.7.1 TransDecoder-v5.7.1
+
+    apt-get install -y libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev tree
+
+    Rscript -e 'install.packages("tidyverse", repos="https://cloud.r-project.org/")'
+    Rscript -e 'if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager"); BiocManager::install("ComplexHeatmap")'
+    Rscript -e 'install.packages("pheatmap", repos="https://cloud.r-project.org/")'
+    Rscript -e 'install.packages("ggrepel", repos="https://cloud.r-project.org/")'
+    Rscript -e 'install.packages("enrichR", repos="https://cloud.r-project.org/")'
+    Rscript -e 'install.packages("circlize", repos="https://cloud.r-project.org/")'
+    Rscript -e 'install.packages("fastcluster", repos="https://cloud.r-project.org/")'
+    Rscript -e 'install.packages("reshape2", repos="https://cloud.r-project.org/")'
+    Rscript -e 'install.packages("broom", repos="https://cloud.r-project.org/")'
+
+
+%environment
+    PATH=$PATH:/opt
+    PATH=$PATH:/opt/cd-hit-v4.8.1-2019-0228
+    PATH=$PATH:/opt/cd-hit-v4.8.1-2019-0228/cd-hit-auxtools
+    PATH=$PATH:/opt/TransDecoder-v5.7.1

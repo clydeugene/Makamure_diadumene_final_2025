@@ -1,0 +1,80 @@
+transcriptome:
+  - diadumene_lineata_transcriptome
+
+genome:
+  - diadumene_lineata_genome
+
+genome_accession:
+  - GCA_918843875.1
+
+samples:
+  - diadumene_lineata_1_rt
+  - diadumene_lineata_3_rt
+  - diadumene_lineata_5_rt
+  - diadumene_lineata_6_rt
+  - diadumene_lineata_7_rt
+  - diadumene_lineata_2_16
+  - diadumene_lineata_3_16
+  - diadumene_lineata_4_16
+  - diadumene_lineata_5_16
+  - diadumene_lineata_6_16
+
+cdhit_seq_id_threshold:
+  - 0.95
+
+cd_hit_word_size:
+  - 8
+
+cdhit_memory:
+  - 16000
+
+evalue:
+  - 1e-5
+
+max_target_seqs:
+  - 20
+
+qcov_hsp_perc:
+  - 30
+
+blastndb:
+  - nt_euk
+
+blastndb_system_path:
+  - ~/blast/db/nt
+
+blastxdb:
+  - nr
+
+blastpdb:
+  - UP000005640
+
+blastpdb_taxid:
+  - 9606
+
+minimum_contig_length:
+  - 400
+
+buscomode:
+  - transcriptome
+
+busco_lineage:
+  - metazoa_odb10
+
+deseq2level:
+  - gene
+  - isoform
+
+FDR:
+  - 1e-2 #
+
+foldchange:
+  - 1 # 0 means 1-fold change, 1 means 2-fold change, 2 means 4-fold change, etc. It follows the formula 2^x where x is the number that 2 is raised to to get the desired fold change.
+
+enrichr_terms:
+  - "cell_cycle"
+  - "oocyte_meiosis"
+
+# Define the taxid for supertranscript blast
+taxid:
+  - 33208 # Metazoa

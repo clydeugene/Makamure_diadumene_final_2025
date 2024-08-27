@@ -1,0 +1,12 @@
+/data
+/.snakemake
+/logs
+/submission
+/envs/*.sif
+/.java
+nohup.out
+/*.pdf
+/*.png
+/scripts/JUM_3.0.0
+/scripts/jum*
+/scripts/ikremsky/
