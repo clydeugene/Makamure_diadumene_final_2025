@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use FindBin;
-use lib("$FindBin::RealBin/../../PerlLib");
+use lib("/usr/local/bin/PerlLib");
 use Pipeliner;
 use File::Basename;
 use Cwd;
