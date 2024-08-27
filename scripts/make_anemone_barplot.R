@@ -37,6 +37,5 @@ plot_final <- ggplot(plot_data, aes(x = category, y = percentage)) +
 # Save the barplot as a png, pdf, and svg files
 ggsave(paste0(outfile_name, ".png"), plot_final, width = 8, height = 8, dpi = 300)
 ggsave(paste0(outfile_name, ".pdf"), plot_final, width = 8, height = 8, dpi = 300)
-ggsave(paste0(outfile_name, ".svg"), plot_final, width = 8, height = 8, dpi = 300)
 
 
