@@ -108,21 +108,3 @@ draw(heatmap_Log2_comp_16_vs_RT_2 +
     heatmap_Hclust_rep_16_5
 )
 dev.off()
-
-
-
-# Make histogram
-# hist_mat <- cbind(Hclust_rep_RT_1, Hclust_rep_RT_2, Hclust_rep_RT_3, Hclust_rep_RT_4, Hclust_rep_RT_5, Hclust_rep_16_1, Hclust_rep_16_2, Hclust_rep_16_3, Hclust_rep_16_4, Hclust_rep_16_5)
-
-# png(paste("Histogram_", heatmap_name, ".png", sep = ""), height = 2000, width = 2000, res = 300)
-# hist(c(hist_mat), xlim = c(0, 1500))
-# dev.off()
-
-# make histogram
-#Hist_mat=cbind(NRC_CA_Final, NRC_DG_Final, NRC_FCortex_Final, NRC_RCortex_Final)
-#png("Histogram_Combined.png", height = 2000, width = 2000, res = 300)
-#hist(c(Hist_mat)) 
-#dev.off()
-# png(paste0("Test_histogram.png"), height = 2000, width = 2000, res = 300)
-# hist(Hclust_rep_RT_1, main = "Histogram of Hclust_rep_RT_1", xlab = "Values")
-# dev.off()
