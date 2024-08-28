@@ -173,7 +173,7 @@ main: {
         $pipeliner->add_commands(new Command($cmd, "$analysis_token.$bam_file.fc.ok"));
 
         
-        $pipeliner->add_commands(new Command("$FindBin::Bin/util/reformat_featureCounts.pl $bam_file.fc > $bam_file.counts",
+        $pipeliner->add_commands(new Command("$FindBin::Bin/reformat_featureCounts.pl $bam_file.fc > $bam_file.counts",
                                              "$analysis_token.$bam_file.counts.ok"));
         
         push (@counts_files, "$bam_file.counts");
