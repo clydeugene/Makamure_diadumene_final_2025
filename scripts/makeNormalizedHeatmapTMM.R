@@ -58,7 +58,7 @@ head(log2_comp[, 1])
 heatmap_log2_comp_16_vs_rt_2 <- Heatmap(log2_comp[,1], name = "log2Fold", col = colorRamp2(c(-3, 0, 3), c("blue","white", "red")), show_row_names = FALSE, cluster_rows = FALSE)
 
 # Draw the combined heatmap
-png(paste(heatmap_name, ".png", sep = ""), height = 2000, width = 2000, res = 300)
+png(paste(heatmap_name, ".png", sep = ""), height = 2000, width = 2000, res = 300, type = "cairo")
 draw(heatmap_log2_comp_16_vs_rt_2 +
     heatmap_hclust_rep_rt_1 +
     heatmap_hclust_rep_rt_2 +
@@ -118,7 +118,7 @@ heatmap_hclust_rep_16_5 <- Heatmap(hclust_rep_16_5, name = "16_rep_5", col = col
 heatmap_log2_comp_16_vs_rt_2 <- Heatmap(log2_comp[,1], name = "log2Fold", col = colorRamp2(c(-3, 0, 3), c("blue","white", "red")), show_row_names = FALSE, cluster_rows = FALSE)
 
 # Draw the combined heatmap
-png(paste(heatmap_name, "colorful", ".png", sep = ""), height = 2000, width = 2000, res = 300)
+png(paste(heatmap_name, "colorful", ".png", sep = ""), height = 2000, width = 2000, res = 300, type = "cairo")
 draw(heatmap_log2_comp_16_vs_rt_2 +
     heatmap_hclust_rep_rt_1 +
     heatmap_hclust_rep_rt_2 +

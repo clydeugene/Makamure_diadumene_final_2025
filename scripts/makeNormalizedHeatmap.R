@@ -56,7 +56,7 @@ col_fun <- colorRamp2(c(1, 12), c("white", "black"))
 heatmap_Log2_comp_16_vs_RT_2 <- Heatmap(Log2_comp[,1], name = "Log2Fold", col = colorRamp2(c(-3, 0, 3), c("blue","white", "red")), show_row_names = FALSE, cluster_rows = FALSE)
 
 # Draw the combined heatmap
-png(paste(heatmap_name, ".png", sep = ""), height = 2000, width = 2000, res = 300)
+png(paste(heatmap_name, ".png", sep = ""), height = 2000, width = 2000, res = 300, type = "cairo")
 draw(heatmap_Log2_comp_16_vs_RT_2 +
     heatmap_Hclust_rep_RT_1 +
     heatmap_Hclust_rep_RT_2 +
@@ -94,7 +94,7 @@ col_fun <- colorRamp2(c(1, 12), c("white", "black"))
 heatmap_Log2_comp_16_vs_RT_2 <- Heatmap(Log2_comp[,1], name = "Log2Fold", col = colorRamp2(c(-3, 0, 3), c("blue","white", "red")), show_row_names = FALSE, cluster_rows = FALSE)
 
 # Draw the combined heatmap
-png(paste(heatmap_name, "colorful", ".png", sep = ""), height = 2000, width = 2000, res = 300)
+png(paste(heatmap_name, "colorful", ".png", sep = ""), height = 2000, width = 2000, res = 300, type = "cairo")
 draw(heatmap_Log2_comp_16_vs_RT_2 +
     heatmap_Hclust_rep_RT_1 +
     heatmap_Hclust_rep_RT_2 +

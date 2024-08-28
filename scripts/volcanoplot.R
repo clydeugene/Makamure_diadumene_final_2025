@@ -83,7 +83,7 @@ trinity_blastp_volcano <- ggplot(data = merged_df, aes(x = log2FoldChange, y = -
   geom_label_repel(data = top_blastp_genes, aes(label = top_blastp_hit), color = "black", label.size = NA, nudge_y = 14, box.padding = unit(1, "lines"), segment.color = "grey50", segment.curvature = 0, max.overlaps = Inf, fill = NA, direction = "x") # To show 5 labels for top genes
 
 # Save the plot
-png(filename = snakemake@output[[1]], width = 2500, height = 2500, units = "px", pointsize = 12, bg = "white", res = 300)
+png(filename = snakemake@output[[1]], width = 2500, height = 2500, units = "px", pointsize = 12, bg = "white", res = 300, type = "cairo")
 trinity_blastp_volcano
 invisible(dev.off())
 
@@ -127,7 +127,7 @@ write.table(sorted_results, snakemake@output[[3]], sep = "\t", quote = FALSE, ro
 # Plot the KEGG_2021 results
 kegg_2021_human_plot <- if (websiteLive) { plotEnrich(enrichr_results[[6]], showTerms = 20, numChar = 40, y = "Count", orderBy = "P.value", title = "Enrichr KEGG_2021_Human") }
 
-png(filename = snakemake@output[[2]], width = 2500, height = 2500, units = "px", pointsize = 12, bg = "white", res = 300)
+png(filename = snakemake@output[[2]], width = 2500, height = 2500, units = "px", pointsize = 12, bg = "white", res = 300, type = "cairo")
 kegg_2021_human_plot
 invisible(dev.off())
 

@@ -223,7 +223,7 @@ rule extract_diff_expr_transcripts:
         # expand("data/processed/DESeq2_{level}/diffExpr.P{FDR}_C{foldchange}.matrix", FDR=config["FDR"], foldchange=config["foldchange"], allow_missing=True),
         transcripts="data/processed/DESeq2/DESeq2_{level}/differentially_expressed_{level}s.txt",
         normalized_heatmap="data/processed/DESeq2/DESeq2_{level}/DESeq2_{level}_heatmap_TMM_combined.png",
-        vertical_heatmap="data/processed/DESeq2/DESeq2_{level}/DE_TPM+LogFold_{level}_heatmap_vertical.png",
+        # vertical_heatmap="data/processed/DESeq2/DESeq2_{level}/DE_TPM+LogFold_{level}_heatmap_vertical.png",
         normalized_heatmap_pdf="data/processed/DESeq2/DESeq2_{level}/DESeq2_{level}_heatmap_TMM_combined.pdf"
     params:
         fdr=config["FDR"],
