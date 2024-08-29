@@ -7,9 +7,8 @@ rule report:
         correlation_heatmap=expand("data/processed/DESeq2/DESeq2_{level}/correlation_heatmap_{level}_combined.png", level=config["deseq2level"]),
         blastn_barplot=expand("data/processed/blastn/{transcriptome}_{db}_barplot.png", transcriptome=config["transcriptome"], db=config["blastndb"]), # For blast to work properly, I downloaded the nt_euk database into the data/processed/blastn/db folder, and also downloaded the taxdb into the same folder. For some reason, species search required that I move taxdb.bti and taxdb.btd to the working directory from which the blast command is run i.e. the data/processed/blastn folder
         volcano=expand("data/processed/DESeq2/DESeq2_{level}/{level}_volcano_plot.png", level=config["deseq2level"]),
-        diff_heatmap=expand("data/processed/DESeq2/DESeq2_{level}/DESeq2_{level}_heatmap_TMM_combined.png", level=config["deseq2level"]),
-        fastqc=expand("data/processed/fastqc/{sample}.merged.SE_trimmed_fastqc.html", sample=config["samples"]),
         dexseq=expand("data/processed/dexseq/{transcriptome}.dexseq.results.dat", transcriptome=config["transcriptome"]),
+        multiqc="data/processed/multiqc/multiqc_report.html"
 
 
 # Read in the assembled transcriptome
@@ -345,8 +344,6 @@ rule blastn_all:
 
         cd {params.outdir} &&
 
-        # If taxdb.bti and taxdb.btd files are not present in the current directory, mv them from the db directory
-
         if [ ! -f taxdb.bti ] || [ ! -f taxdb.btd ]; then
 
             mv db/taxdb.bti . &&
@@ -427,8 +424,6 @@ rule fastqc:
         "data/raw/{sample}.merged.SE_trimmed.fq.gz"
     output:
         html="data/processed/fastqc/{sample}.merged.SE_trimmed_fastqc.html",
-        zip="data/processed/fastqc/{sample}.merged.SE_trimmed_fastqc.zip", # the suffix _fastqc.zip is necessary for multiqc to find the file. If not using multiqc, you are free to choose an arbitrary filename
-        # multiqc = touch("data/processed/{sample}fastqc.done")
     params:
         extra = "--quiet",
         outdir = "data/processed/fastqc"
@@ -439,6 +434,24 @@ rule fastqc:
         mem_mb = 16000
     shell:
         "fastqc --threads {threads} --memory {resources.mem_mb} --outdir {params.outdir} {input} > {log} 2>&1"
+
+rule multiqc:
+    input:
+        fastqc=expand("data/processed/fastqc/{sample}.merged.SE_trimmed_fastqc.html", sample=config["samples"]),
+    output:
+        html="data/processed/multiqc/multiqc_report.html"
+    params:
+        fastqc_dir="data/processed/fastqc",
+        outdir="data/processed/multiqc"
+    log:
+        logfile="logs/multiqc.log"
+    shell:
+        """
+        mkdir -p {params.outdir} &&
+
+        multiqc -o {params.outdir} {params.fastqc_dir} > {log.logfile} 2>&1
+
+        """
 
 
 rule dexseq:
