@@ -104,7 +104,7 @@ main: {
     my $analysis_token = "$chkpts_dir/" . basename($genes_gtf_file) . ".$aligner";
     
     ## flatten the gtf file
-    my $cmd = "$TRINITY_HOME/trinity-plugins/DEXseq_util/dexseq_prepare_annotation.py $genes_gtf_file $genes_gtf_file.dexseq.gff";
+    my $cmd = "../../../scripts/dexseq_prepare_annotation.py $genes_gtf_file $genes_gtf_file.dexseq.gff";
     $pipeliner->add_commands(new Command($cmd, "$chkpts_dir/" . basename($genes_gtf_file) . ".flatten_gtf.ok"));
 
     if ($aligner =~ /HISAT2/i) {
