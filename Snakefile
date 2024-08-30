@@ -7,7 +7,7 @@ rule report:
         correlation_heatmap=expand("data/processed/DESeq2/DESeq2_{level}/correlation_heatmap_{level}_combined.png", level=config["deseq2level"]),
         blastn_barplot=expand("data/processed/blastn/{transcriptome}_{db}_barplot.png", transcriptome=config["transcriptome"], db=config["blastndb"]), # For blast to work properly, I downloaded the nt_euk database into the data/processed/blastn/db folder, and also downloaded the taxdb into the same folder. For some reason, species search required that I move taxdb.bti and taxdb.btd to the working directory from which the blast command is run i.e. the data/processed/blastn folder
         volcano=expand("data/processed/DESeq2/DESeq2_{level}/{level}_volcano_plot.png", level=config["deseq2level"]),
-        dexseq=expand("data/processed/dexseq/{transcriptome}.dexseq.results.dat", transcriptome=config["transcriptome"]),
+        dexseq_plot=expand("data/processed/dexseq/dexseq_{transcriptome}_volcano_plot.pdf", transcriptome=config["transcriptome"]),
         multiqc="data/processed/multiqc/multiqc_report.html"
 
 
@@ -438,18 +438,20 @@ rule fastqc:
 rule multiqc:
     input:
         fastqc=expand("data/processed/fastqc/{sample}.merged.SE_trimmed_fastqc.html", sample=config["samples"]),
+        salmon="data/processed/salmon.done",
+        supertranscripts=expand("data/processed/dexseq/{transcriptome}.fasta", transcriptome=config["transcriptome"]),
     output:
         html="data/processed/multiqc/multiqc_report.html"
     params:
-        fastqc_dir="data/processed/fastqc",
-        outdir="data/processed/multiqc"
+        results_dir="data/",
+        outdir="data/processed/multiqc/"
     log:
         logfile="logs/multiqc.log"
     shell:
         """
         mkdir -p {params.outdir} &&
 
-        multiqc -o {params.outdir} {params.fastqc_dir} > {log.logfile} 2>&1
+        multiqc -o {params.outdir} {params.results_dir} --force > {log.logfile} 2>&1
 
         """
 
@@ -483,3 +485,18 @@ rule dexseq:
 
         """
 
+rule dexseq_volcano_plot:
+    input:
+        dexseq=rules.dexseq.output.dex_out
+    output:
+        pdf="data/processed/dexseq/dexseq_{transcriptome}_volcano_plot.pdf",
+        png="data/processed/dexseq/dexseq_{transcriptome}_volcano_plot.png"
+    params:
+        transcriptome=config["transcriptome"]
+    log:
+        logfile="logs/dexseq_{transcriptome}_volcano_plot.log"
+    shell:
+        """
+        Rscript scripts/dexseq_volcano_plot.R {params.transcriptome} > {log.logfile} 2>&1
+
+        """
