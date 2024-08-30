@@ -1,4 +1,19 @@
 files:
+- path: zenodo/trimmed_fq.tar.gz
+  tracked: true
+  md5: 4fd1ded44409187b87c227c5a7448a94
+  size: 17211116645
+  url: null
+- path: zenodo/diadumenernaseq.sif
+  tracked: true
+  md5: c76ee8735e55389383824e1b15588d8a
+  size: 3306182405
+  url: null
+- path: zenodo/multiqc_report.html
+  tracked: true
+  md5: 64c2660e7cf00ce96f617250b80e8df3
+  size: 4845422
+  url: null
 - path: zenodo/trinity.gene.counts.matrix.16_vs_rt.DESeq2.DE_results
   tracked: true
   md5: 0662dce4eb640dfad170d0d7801f23f4
@@ -14,22 +29,12 @@ files:
   md5: eea7053a489488adff90d22830062ff4
   size: 467714439
   url: null
-- path: zenodo/trimmed_fq.tar.gz
-  tracked: true
-  md5: 4fd1ded44409187b87c227c5a7448a94
-  size: 17211116645
-  url: null
-- path: zenodo/multiqc_report.html
-  tracked: true
-  md5: 64c2660e7cf00ce96f617250b80e8df3
-  size: 4845422
-  url: null
 remotes:
-  zenodo: !ZenodoAPI
+  data: !ZenodoAPI
     name: clyde_diadumene_final
     deposition_id: 13536101
     bucket_url: https://zenodo.org/api/files/ed60c4c4-662c-4c2f-9c43-bdeed278b0c6
-  data: !ZenodoAPI
+  zenodo: !ZenodoAPI
     name: clyde_diadumene_final
     deposition_id: 13536101
     bucket_url: https://zenodo.org/api/files/ed60c4c4-662c-4c2f-9c43-bdeed278b0c6
