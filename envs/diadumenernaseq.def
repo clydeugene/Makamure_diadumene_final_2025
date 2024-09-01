@@ -1,5 +1,5 @@
 bootstrap: docker
-from: trinityrnaseq/trinityrnaseq:2.15.2
+from: trinityrnaseq/trinityrnaseq:2.15.0
 
 %post
     apt-get update
@@ -30,7 +30,7 @@ from: trinityrnaseq/trinityrnaseq:2.15.2
     rm TransDecoder-v5.7.1.zip
     mv TransDecoder-TransDecoder-v5.7.1 TransDecoder-v5.7.1
 
-    apt-get install -y libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev tree
+    apt-get install -y libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev tree less
 
     Rscript -e 'install.packages("tidyverse", repos="https://cloud.r-project.org/")'
     Rscript -e 'if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager"); BiocManager::install("ComplexHeatmap")'
