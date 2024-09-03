@@ -49,7 +49,7 @@ theme_set(theme_classic(base_size = 12) +
   theme(
         axis.title.y = element_text(face = "bold", margin = margin(0,20,0,0), size = rel(1.1), color = 'black'),
         axis.title.x = element_text(hjust = 0.5, face = "bold", margin = margin(20,0,0,0), size = rel(1.1), color = 'black'),
-        plot.title = element_text(hjust = 0.5, margin = margin(0,0,20,0), face = "bold", size = rel(1.1), color = 'black')
+        plot.title = element_text(hjust = 0.15, margin = margin(0,0,20,0), face = "bold", size = rel(1.5), color = 'black')
         ))
 
 # Create the volcano plot
@@ -65,7 +65,7 @@ volcano_plot <- ggplot(filtered_results, aes(x = log2fold_16_rt, y = -log10(padj
   scale_x_continuous(breaks = seq(-15, 15, 3)) + # to customize the breaks in the x axis
   ggtitle("Cold (16\u00B0C) vs Room temperature differential exon usage (DEU)")
 
-volcano_plot
+# volcano_plot
 
 # Save the plot as png and pdf files
 ggsave(paste0("dexseq_", transcriptome, "_volcano_plot.png"), plot = volcano_plot, width = 2500, height = 2500, units = "px", dpi = 300)
