@@ -11,3 +11,4 @@ nohup.out
 /scripts/jum*
 /scripts/ikremsky/
 /zenodo
+/.cache
