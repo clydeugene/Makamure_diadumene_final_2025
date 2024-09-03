@@ -4,6 +4,7 @@ from: trinityrnaseq/trinityrnaseq:2.15.0
 %post
     apt-get update
 
+    # Install cd-hit 4.8.1
     cd /opt/
     wget https://github.com/weizhongli/cdhit/releases/download/V4.8.1/cd-hit-v4.8.1-2019-0228.tar.gz
     tar xvf cd-hit-v4.8.1-2019-0228.tar.gz --gunzip
@@ -14,26 +15,53 @@ from: trinityrnaseq/trinityrnaseq:2.15.0
     
     cd cd-hit-auxtools
     make
-    
+
+    # Install NCBI Datasets and Dataformat 
     cd /opt/
 
     curl -o datasets 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/datasets'
     curl -o dataformat 'https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/dataformat'
     chmod +x datasets dataformat
 
+
+    # Install diamond 2.1.9
     wget http://github.com/bbuchfink/diamond/releases/download/v2.1.9/diamond-linux64.tar.gz
     tar xzf diamond-linux64.tar.gz
     rm diamond-linux64.tar.gz
 
-    wget https://github.com/TransDecoder/TransDecoder/archive/refs/tags/TransDecoder-v5.7.1.zip
-    unzip TransDecoder-v5.7.1.zip
-    rm TransDecoder-v5.7.1.zip
-    mv TransDecoder-TransDecoder-v5.7.1 TransDecoder-v5.7.1
 
-    apt-get install -y libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev tree less
+    # Install TransDecoder 5.5.0
+    wget https://github.com/TransDecoder/TransDecoder/archive/refs/tags/TransDecoder-v5.5.0.zip
+    unzip TransDecoder-v5.5.0.zip
+    rm TransDecoder-v5.5.0.zip
+    mv TransDecoder-TransDecoder-v5.5.0 TransDecoder-v5.5.0
 
+
+    # Install salmon 0.14.1
+    cd /usr/local/src
+    rm -rf salmon-1.5.2_linux_x86_64/
+    wget https://github.com/COMBINE-lab/salmon/releases/download/v0.14.1/salmon-0.14.1_linux_x86_64.tar.gz
+    tar xzf salmon-0.14.1_linux_x86_64.tar.gz
+    rm salmon-0.14.1_linux_x86_64.tar.gz
+    mv salmon-latest_linux_x86_64 salmon
+    rm /usr/local/bin/salmon
+    ln -s /usr/local/src/salmon/bin/salmon /usr/local/bin/salmon
+
+    # Install R dependencies and other useful tools
+    apt-get install -y libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev tree less parallel
+
+    # Install R 4.3.2 and required packages and make it the default R version
+    export R_VERSION=4.3.2
+    curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-${R_VERSION}_1_amd64.deb
+    apt-get install -y ./r-${R_VERSION}_1_amd64.deb
+    mv /usr/local/bin/R /usr/local/bin/R_4.2.0
+    mv /usr/local/bin/Rscript /usr/local/bin/Rscript_4.2.0
+    ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
+    ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
+
+
+    Rscript -e 'install.packages("BiocManager", repos="http://cran.us.r-project.org")'
     Rscript -e 'install.packages("tidyverse", repos="https://cloud.r-project.org/")'
-    Rscript -e 'if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager"); BiocManager::install("ComplexHeatmap")'
     Rscript -e 'install.packages("pheatmap", repos="https://cloud.r-project.org/")'
     Rscript -e 'install.packages("ggrepel", repos="https://cloud.r-project.org/")'
     Rscript -e 'install.packages("enrichR", repos="https://cloud.r-project.org/")'
@@ -41,10 +69,29 @@ from: trinityrnaseq/trinityrnaseq:2.15.0
     Rscript -e 'install.packages("fastcluster", repos="https://cloud.r-project.org/")'
     Rscript -e 'install.packages("reshape2", repos="https://cloud.r-project.org/")'
     Rscript -e 'install.packages("broom", repos="https://cloud.r-project.org/")'
+    Rscript -e 'install.packages("remotes", repos="https://cloud.r-project.org/")'
+
+    Rscript -e 'BiocManager::install("ComplexHeatmap")'
+    Rscript -e 'BiocManager::install("DESeq2")'
+    Rscript -e 'BiocManager::install("edgeR")'
+    Rscript -e 'BiocManager::install("ape")'
+    Rscript -e 'BiocManager::install("ctc")'
+    Rscript -e 'BiocManager::install("gplots")'
+    Rscript -e 'BiocManager::install("Biobase")'
+    Rscript -e 'BiocManager::install("qvalue")'
+    Rscript -e 'BiocManager::install("goseq")'
+    Rscript -e 'BiocManager::install("Glimma")'
+    Rscript -e 'BiocManager::install("ROTS")'
+    Rscript -e 'BiocManager::install("GOplot")'
+    Rscript -e 'BiocManager::install("argparse")'
+    Rscript -e 'BiocManager::install("fastcluster")'
+    Rscript -e 'BiocManager::install("DEXSeq")'
+    Rscript -e 'BiocManager::install("tximport")'
+    Rscript -e 'BiocManager::install("tximportData")'
 
 
 %environment
     PATH=$PATH:/opt
     PATH=$PATH:/opt/cd-hit-v4.8.1-2019-0228
     PATH=$PATH:/opt/cd-hit-v4.8.1-2019-0228/cd-hit-auxtools
-    PATH=$PATH:/opt/TransDecoder-v5.7.1
+    PATH=$PATH:/opt/TransDecoder-v5.5.0
