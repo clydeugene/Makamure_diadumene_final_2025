@@ -74,12 +74,12 @@ trinity_blastp_volcano <- ggplot(data = merged_df, aes(x = log2FoldChange, y = -
   geom_hline(yintercept = -log10(0.01), col = "gray", linetype = 'dashed') +
   geom_point(size = 2) +
   scale_color_manual(values = c("blue", "gray", "red"), # to set the colors of our variable
-                    labels = c(paste0("Downregulated at 16°C (n = ", downregulated, ")"), paste0("Not significant (n = ", notsignificant, ")"), paste0("Upregulated at 16°C (n = ", upregulated, ")"))) + # to set the labels in case we want to overwrite the categories from the data frame (up, down, no) )
+                    labels = c(paste0("Downregulated at 16\u00B0C (n = ", downregulated, ")"), paste0("Not significant (n = ", notsignificant, ")"), paste0("Upregulated at 16\u00B0C (n = ", upregulated, ")"))) + # to set the labels in case we want to overwrite the categories from the data frame (up, down, no) )
   coord_cartesian(ylim = c(0, 70), xlim = c(-12, 12)) + # since some genes can have -log10padj of inf, we set these limits
   labs(color = '', #legend_title, 
        x = expression("log"[2]*"Fold Change"), y = expression("-log"[10]*"(padj)")) + 
   scale_x_continuous(breaks = seq(-12, 12, 2)) + # to customize the breaks in the x axis
-  ggtitle("Cold temperature vs Room temperature (RT) DEGs") +
+  ggtitle("Cold (16\u00B0C) vs Room temperature (RT) DEGs") +
   geom_label_repel(data = top_blastp_genes, aes(label = top_blastp_hit), color = "black", label.size = NA, nudge_y = 14, box.padding = unit(1, "lines"), segment.color = "grey50", segment.curvature = 0, max.overlaps = Inf, fill = NA, direction = "x") # To show 5 labels for top genes
 
 # Save the plot
