@@ -12,3 +12,6 @@ nohup.out
 /scripts/ikremsky/
 /zenodo
 /.cache
+/.conda
+/.config
+/.condarc
