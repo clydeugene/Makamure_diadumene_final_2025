@@ -26,11 +26,11 @@ df <- original_df |>
 # (log2FoldChange respectively positive or negative)
 df$diffexpressed <- "no"
 
-# if log2FoldChange > 0.5 and p-adj < 0.01, set as "up"
-df$diffexpressed[df$log2FoldChange > 0.5 & df$padj < 0.01] <- "up"
+# if log2FoldChange > 1 and p-adj < 0.01, set as "up"
+df$diffexpressed[df$log2FoldChange > 1 & df$padj < 0.01] <- "up"
 
-# if log2FoldChange < -0.5 and p-adj < 0.01, set as "down"
-df$diffexpressed[df$log2FoldChange < -0.5 & df$padj < 0.01] <- "down"
+# if log2FoldChange < -1 and p-adj < 0.01, set as "down"
+df$diffexpressed[df$log2FoldChange < -1 & df$padj < 0.01] <- "down"
 
 # Count the number of genes that are up- or down- regulated
 upregulated <- sum(df$diffexpressed == "up")
