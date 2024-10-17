@@ -18,7 +18,7 @@ C <- signif((((d - (a + c + b)) + (e - d)) / e) * 100, 3)
 
 # Make a data frame of the percentages
 plot_data <- data.frame(
-  category = c("Other Anemones and Corals", "Diadumene Genome", "Other IDs and unidentified"),
+  category = c("Other Anemones and Corals", "Diadumene Genome", "Other species / Unidentified"),
   percentage = c(A, B, C)
 )
 
