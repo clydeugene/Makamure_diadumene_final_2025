@@ -18,3 +18,8 @@ nohup.out
 conda.config
 envs/*simg
 envs/Dockerfile
+scripts/R
+cellage3.tsv
+signatures1.csv
+vscodefix.sh
+hgnc_complete_set_2024-10-01.tsv
