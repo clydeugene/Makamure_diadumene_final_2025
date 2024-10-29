@@ -8,7 +8,8 @@ rule report:
         blastn_barplot=expand("data/processed/blastn/{transcriptome}_{db}_barplot.png", transcriptome=config["transcriptome"], db=config["blastndb"]), # For blast to work properly, I downloaded the nt_euk database into the data/processed/blastn/db folder, and also downloaded the taxdb into the same folder. For some reason, species search required that I move taxdb.bti and taxdb.btd to the working directory from which the blast command is run i.e. the data/processed/blastn folder
         volcano=expand("data/processed/DESeq2/DESeq2_{level}/{level}_volcano_plot.png", level=config["deseq2level"]),
         dexseq_plot=expand("data/processed/dexseq/dexseq_{transcriptome}_volcano_plot.pdf", transcriptome=config["transcriptome"]),
-        multiqc="data/processed/multiqc/multiqc_report.html"
+        multiqc="data/processed/multiqc/multiqc_report.html",
+        gatk="data/processed/gatk/genome/logs/all_snp_counts.log"
 
 
 # Read in the assembled transcriptome
@@ -177,7 +178,7 @@ rule salmon:
 rule counts_matrix:
     input:
         samples=rules.salmon.input.samples,
-        gene_trans_map=rules.salmon.output
+        gene_trans_map=rules.salmon.output.quant
     output:
         # quants="data/processed/salmon/quant_files.list",
         counts="data/processed/salmon/trinity.{level}.counts.matrix",
@@ -207,6 +208,9 @@ rule DESeq2:
         deseq2="data/processed/DESeq2/trinity.{level}.counts.matrix.16_vs_rt.DESeq2.DE_results"
     params:
         deseq2dir="data/processed/DESeq2"
+    container: None
+    conda:
+        "trinity"
     log:
         logfile="logs/deseq2/{level}.log"
     shell:
@@ -229,6 +233,9 @@ rule extract_diff_expr_transcripts:
         foldchange=config["foldchange"],
         out_dir="data/processed/DESeq2/DESeq2_{level}",
         # lev="{level}"
+    container: None
+    conda:
+        "r4.2.2"
     log:
         diffExprlog="logs/extract_diff_expr_{level}.log",
         # clusterslog=expand("log/define_clusters_2_{level}.log", level=config["deseq2level"], allow_missing=True),
@@ -273,17 +280,49 @@ rule add_gene_symbols:
         """
 
 
+rule get_aging_db:
+    output:
+        cell_age="cellage3.tsv",
+        cell_sig="signatures1.csv"
+    shell:
+        """
+        cd data/references &&
+
+        mkdir -p aging &&
+
+        cd aging &&
+
+        wget https://genomics.senescence.info/cells/cellAge.zip &&
+        unzip cellAge.zip && mv release.html cell_age_release.html &&
+
+        wget https://genomics.senescence.info/cells/cellSignatures.zip &&
+        unzip cellSignatures.zip && mv release.html cell_sig_release.html &&
+
+        rm *.zip &&
+
+        cd ../../../ &&
+
+        ln -s data/references/aging/cellage3.tsv &&
+
+        ln -s data/references/aging/signatures1.csv
+
+        """
+
+
 rule volcano_plot:
     input:
         dge_results=rules.DESeq2.output,
         gene_symbols=rules.add_gene_symbols.output,
+        cell_age=rules.get_aging_db.output.cell_age,
+        cell_sig=rules.get_aging_db.output.cell_sig,
         trinity_genes="data/processed/DESeq2/DESeq2_{level}/differentially_expressed_{level}s.txt"
     output:
         volcano_plot="data/processed/DESeq2/DESeq2_{level}/{level}_volcano_plot.png",
         enrichr="data/processed/DESeq2/DESeq2_{level}/{level}_enrichr_kegg_2021_human.png",
         enrichr_table="data/processed/DESeq2/DESeq2_{level}/{level}_enrichr_kegg_2021_human.txt",
         volcano_pdf="data/processed/DESeq2/DESeq2_{level}/{level}_volcano_plot.pdf",
-        enrichr_pdf="data/processed/DESeq2/DESeq2_{level}/{level}_enrichr_kegg_2021_human.pdf"
+        enrichr_pdf="data/processed/DESeq2/DESeq2_{level}/{level}_enrichr_kegg_2021_human.pdf",
+        aging_table="data/processed/DESeq2/DESeq2_{level}/{level}_level_aging_data_table.tsv"
     log:
         logfile="logs/volcano_plot_{level}.log"
     script:
@@ -402,6 +441,9 @@ rule supertranscripts:
         out_dir="data/processed/dexseq/",
         prefix="{transcriptome}"
     threads: 30
+    container: None
+    conda:
+        "trinity"
     log:
         log="logs/supertranscript_{transcriptome}.log"
     shell:
@@ -456,6 +498,40 @@ rule multiqc:
         """
 
 
+# rule dexseq:
+#     input:
+#         fasta=rules.supertranscripts.output.super_fasta,
+#         gtf=rules.supertranscripts.output.super_gtf,
+#         samples="data/raw/salmon_samples.txt"
+#     output:
+#         dex_out="data/processed/dexseq/{transcriptome}.dexseq.results.dat",
+#     params:
+#         out_dir="data/processed/dexseq/",
+#         prefix="{transcriptome}",
+#         image="envs/trinity.simg"
+#     threads: 30
+#     container: None
+#     conda:
+#         "trinity"
+#     log:
+#         "logs/dexseq_{transcriptome}.log" 
+#     shell:
+#         """
+#         cd {params.out_dir} &&
+
+#         set -e &&
+
+#         ../../../scripts/dexseq_wrapper.pl \
+#         --genes_fasta ../../../{input.fasta} \
+#         --genes_gtf ../../../{input.gtf} \
+#         --samples_file ../../../{input.samples} \
+#         --out_prefix {params.prefix} \
+#         --aligner STAR \
+#         --CPU {threads} \
+#         > ../../../{log} 2>&1
+
+#         """
+
 rule dexseq:
     input:
         fasta=rules.supertranscripts.output.super_fasta,
@@ -468,13 +544,15 @@ rule dexseq:
         prefix="{transcriptome}",
         image="envs/trinity.simg"
     threads: 30
+    container: None
     log:
         "logs/dexseq_{transcriptome}.log" 
     shell:
         """
         cd {params.out_dir} &&
 
-        ../../../scripts/dexseq_wrapper.pl \
+        apptainer exec -e ../../../{params.image} \
+        /usr/local/bin/Analysis/SuperTranscripts/DTU/dexseq_wrapper.pl \
         --genes_fasta ../../../{input.fasta} \
         --genes_gtf ../../../{input.gtf} \
         --samples_file ../../../{input.samples} \
@@ -485,12 +563,16 @@ rule dexseq:
 
         """
 
+
 rule dexseq_volcano_plot:
     input:
-        dexseq=rules.dexseq.output.dex_out
+        dexseq=rules.dexseq.output.dex_out,
+        cell_age=rules.get_aging_db.output.cell_age,
+        cell_sig=rules.get_aging_db.output.cell_sig
     output:
         pdf="data/processed/dexseq/dexseq_{transcriptome}_volcano_plot.pdf",
-        png="data/processed/dexseq/dexseq_{transcriptome}_volcano_plot.png"
+        png="data/processed/dexseq/dexseq_{transcriptome}_volcano_plot.png",
+        aging_table="data/processed/dexseq/dexseq_{transcriptome}_aging_data_table.tsv"
     params:
         transcriptome=config["transcriptome"]
     log:
@@ -498,5 +580,24 @@ rule dexseq_volcano_plot:
     shell:
         """
         Rscript scripts/dexseq_volcano_plot.R {params.transcriptome} > {log.logfile} 2>&1
+
+        """
+
+
+rule gatk_pipeline:
+    input:
+        fasta=rules.get_ref_genome.output.genome,
+    output:
+        gatk="data/processed/gatk/genome/logs/all_snp_counts.log"
+    threads: 30
+    container: None
+    conda:
+        "trinity"
+    log:
+        "logs/gatk_pipeline.log"
+    shell:
+        """
+
+        scripts/gatk_mutect2_pipeline.sh {input.fasta} > {log} 2>&1
 
         """
