@@ -23,3 +23,11 @@ cellage3.tsv
 signatures1.csv
 vscodefix.sh
 hgnc_complete_set_2024-10-01.tsv
+splicing_genes.tsv
+scripts/analyze_diff_expr.pl
+trimmed_hgnc_complete_set_2024-10-01.tsv
+dexseq_diadumene_lineata_transcriptome_merged_df.tsv
+scripts/PtR
+envs/trinity_conda*
+envs/trinity2.yaml
+trinity_conda.yml
