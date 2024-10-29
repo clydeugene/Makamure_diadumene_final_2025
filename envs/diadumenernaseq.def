@@ -48,17 +48,41 @@ from: trinityrnaseq/trinityrnaseq:2.15.0
     ln -s /usr/local/src/salmon/bin/salmon /usr/local/bin/salmon
 
     # Install R dependencies and other useful tools
-    apt-get install -y libharfbuzz-dev libfribidi-dev libfreetype6-dev libpng-dev libtiff5-dev libjpeg-dev tree less parallel
+    apt-get install -y bzip2 \
+        libharfbuzz-dev \
+        libfribidi-dev \
+        libfreetype6-dev \
+        libpng-dev \
+        libtiff5-dev \
+        libjpeg-dev \
+        tree \
+        less \
+        parallel \
+        ca-certificates \
+        git \
+        libglib2.0-0 \
+        libsm6 \
+        libxext6 \
+        libxrender1 \
+        mercurial \
+        openssh-client \
+        procps \
+        subversion \
 
+    
     # Install R 4.3.2 and required packages and make it the default R version
     export R_VERSION=4.3.2
     curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-${R_VERSION}_1_amd64.deb
     apt-get install -y ./r-${R_VERSION}_1_amd64.deb
+
+    mv /usr/local/lib/R /usr/local/lib/R_4.2.0
     mv /usr/local/bin/R /usr/local/bin/R_4.2.0
     mv /usr/local/bin/Rscript /usr/local/bin/Rscript_4.2.0
-    ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R
-    ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
+    cp -r /opt/R/${R_VERSION}/lib/R /usr/local/lib/R
+
+    ln -s /usr/local/lib/R/bin/R /usr/local/bin/R
+    ln -s /usr/local/lib/R/bin/Rscript /usr/local/bin/Rscript
 
     Rscript -e 'install.packages("BiocManager", repos="http://cran.us.r-project.org")'
     Rscript -e 'install.packages("tidyverse", repos="https://cloud.r-project.org/")'
