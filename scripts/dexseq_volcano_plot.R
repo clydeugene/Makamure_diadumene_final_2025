@@ -16,6 +16,15 @@ results <- read.delim("diadumene_lineata_transcriptome.dexseq.results.dat", head
 # Read in the blastp results
 blastp <- read.delim("../blastp/extract_orfs_longest_orfs.blastp.outfmt6", header = FALSE, sep = "\t", row.names = NULL)
 
+# Import cell aging
+
+cell_age <- read_delim("cellage3.tsv", delim = "\t", col_names = TRUE, show_col_types = FALSE) |>
+  select("Gene symbol", "Type of senescence", "Senescence Effect")
+
+cell_sig <- read_delim("signatures1.csv", delim = ";", col_names = TRUE) |>
+  select("gene_symbol", "ovevrexp", "underexp")
+
+
 # Filter the blastp results to only include the trinity_id and gene columns
 blastp_filtered <- blastp |>
   select(trinity_id = V1, gene = V2) |>
@@ -62,11 +71,51 @@ ns_exons <- comma(sum(filtered_results$diffexpressed == "no"))
 
 # Add gene symbols to the filtered_results df
 merged_df <- filtered_results |>
-  rownames_to_column(var = "full_trinity_id") |>  # Temporarily store rownames as a column
-  mutate(trinity_id = sub("_E.*", "", full_trinity_id)) |>  # Extract trinity_id by removing the exon part
+  rownames_to_column(var = "full_trinity_id") |>
+  mutate(trinity_id = sub("_E.*", "", full_trinity_id)) |>  # Trim trinity_id
   left_join(blastp_filtered, by = "trinity_id") |>  # Join based on trinity_id
-  select(-trinity_id) |>  # Remove the temporary trinity_id column after the join
-  column_to_rownames(var = "full_trinity_id")  # Convert back to the original row names
+  select(-trinity_id) |>  # Remove the temporary trinity_id column
+  column_to_rownames(var = "full_trinity_id")  # Revert to original row names
+
+# Write the merged_df to a file
+write.table(merged_df,
+  paste0("dexseq_", transcriptome, "_merged_df.tsv"),
+  sep = "\t",
+  quote = FALSE,
+  row.names = TRUE
+)
+
+# Select the top differentially expressed genes with senescence effect
+diff_expr_genes <- merged_df |>
+  filter(!is.na(gene) & diffexpressed != "no" & abs(log2fold_16_rt) > 0.5) |>
+  mutate(gene = strsplit(gene, ",")) |>
+  unnest(gene) |>
+  mutate(gene = trimws(gene)) |>
+  left_join(cell_age, by = c("gene" = "Gene symbol")) |>
+  left_join(cell_sig, by = c("gene" = "gene_symbol")) |>
+  filter(rowSums(across(everything(), is.na)) <= 3) |>
+  arrange(desc(abs(log2fold_16_rt)), diffexpressed, ovevrexp, gene) |>
+  select(gene,
+    padj,
+    log2fold_16_rt,
+    diffexpressed,
+    `Senescence Effect`,
+    ovevrexp,
+    underexp
+  )
+
+# Select the top 5 differentially expressed genes with senescence effect
+top_5_diff_genes <- diff_expr_genes |>
+  filter(`Senescence Effect` == "Inhibits") |>
+  top_n(5, wt = -padj) 
+
+# Save the results to a file
+write.table(diff_expr_genes,
+  paste0("dexseq_", transcriptome, "_aging_data_table.tsv"),
+  sep = "\t",
+  quote = FALSE,
+  row.names = FALSE
+)
 
 # Top blastp  genes
 top_blastp_genes <- merged_df |>
@@ -95,19 +144,37 @@ theme_set(theme_classic(base_size = 12) +
         legend.title = element_text(size = 32, face = "bold")
         ))
 
+# Set label limits
+y_limits <- c(45, NA)
+
 # Create the volcano plot
 volcano_plot <- ggplot(filtered_results, aes(x = log2fold_16_rt, y = -log10(padj), color = diffexpressed)) +
   geom_vline(xintercept = c(-0.5, 0.5), col = "gray", linetype = 'dashed') + # plotting these first so they are behind the points
   geom_hline(yintercept = -log10(0.01), col = "gray", linetype = 'dashed') +
   geom_point(size = 3) +
   scale_color_manual(values = c("blue", "gray", "red"), # to set the colors of our variable
-                    labels = c(paste0("Downregulated (n = ", down_exons, ")"), paste0("Not significant (n = ", ns_exons, ")"), paste0("Upregulated (n = ", up_exons, ")"))) + # to set the labels in case we want to overwrite the categories from the data frame (up, down, no) )
-  coord_cartesian(ylim = c(0, 80), xlim = c(-12, 12)) + # since some genes can have -log10padj of inf, we set these limits
-  labs(color = 'DEU at 16\u00B0C', #legend_title, 
-       x = expression("log"[2]*"Fold Change"), y = expression("-log"[10]*"(padj)")) + 
-  scale_x_continuous(breaks = seq(-12, 12, 6), ) + # to customize the breaks in the x axis
-  # ggtitle("DEU")
-  geom_label_repel(data = top_blastp_genes, aes(label = gene), color = "black", label.size = NA, nudge_y = 25, box.padding = unit(1, "lines"), segment.color = "black", segment.curvature = 0, max.overlaps = Inf, fill = NA, direction = "x", size = 10) + # To show 5 labels for top genes
+                    labels = c(paste0("Down at 16\u00B0C (n = ", down_exons, ")"), paste0("Not significant (n = ", ns_exons, ")"), paste0("Up at 16\u00B0C (n = ", up_exons, ")"))) + # to set the labels in case we want to overwrite the categories from the data frame (up, down, no) )
+  coord_cartesian(ylim = c(0, 80),
+    xlim = c(-12, 12)
+  ) + # since some genes can have -log10padj of inf, we set these limits
+  labs(color = 'DEU', #legend_title, 
+       x = expression("log"[2]*" Fold Change"),
+       y = expression("-log"[10]*" (Adjusted P-value)")) +
+  scale_x_continuous(breaks = seq(-12, 12, 6),
+  ) + # to customize the breaks in the x axis
+  geom_label_repel(data = top_5_diff_genes, aes(label = gene),
+    color = "black",
+    label.size = NA,
+    nudge_y = 25,
+    box.padding = unit(1, "lines"),
+    segment.color = "black",
+    segment.curvature = 0,
+    max.overlaps = Inf,
+    fill = NA, direction = "x",
+    size = 10,
+    ylim = y_limits,
+    hjust = 0
+  ) + # To show 5 labels for top genes
   theme(legend.position = c(0.72, 0.88), legend.key.spacing.y = unit(0.2, "cm"))
 
 # volcano_plot
