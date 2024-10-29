@@ -1,13 +1,9 @@
-#Stephen Justinen
+# Modified from a script written by Stephen Justinen
 echo techfastamerge.sh start
-process ()
-{
-	zcat ${file}*.fastq.gz > ${file}.merged.SE.fastq
-        gzip ${file}.merged.SE.fastq
-}
-for file in Hal_1_rt Hal_2_16 Hal_3_16 Hal_3_rt Hal_4_16 Hal_5_16 Hal_5_rt Hal_6_16 Hal_6_rt Hal_7_rt
-do
-	process &
-done
-wait
+
+# Merge technical replicates for each sample
+
+parallel 'zcat /data3/sjustinen/Hessinger_Data/technical_fastqs{}*.fastq.gz | gzip > zenodo/{}.merged.SE.fastq.gz' ::: Hal_1_rt Hal_2_16 Hal_3_16 Hal_3_rt Hal_4_16 Hal_5_16 Hal_5_rt Hal_6_16 Hal_6_rt Hal_7_rt
+
+# End of script!
 echo techfastamerge.sh end
