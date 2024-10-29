@@ -598,6 +598,8 @@ rule gatk_pipeline:
     shell:
         """
 
-        scripts/gatk_mutect2_pipeline.sh {input.fasta} > {log} 2>&1
+        scripts/gatk_mutect2_pipeline.sh {input.fasta} > {log} 2>&1 &&
+
+        Rscript scripts/vcf_barplot.R >> {log} 2>&1
 
         """
