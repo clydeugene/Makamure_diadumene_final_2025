@@ -30,3 +30,4 @@ scripts/PtR
 envs/trinity_conda*
 envs/trinity2.yaml
 trinity_conda.yml
+enrichr_results_GO_Biological_Process_2023.txt
