@@ -1,63 +1,18 @@
 files:
-- path: zenodo/dexseq_results.dat
-  tracked: true
-  md5: 393579659695c7d683213c7b4c14866e
-  size: 80838913
-  url: null
-- path: zenodo/diadumene_lineata_2_16.merged.SE.fastq.gz
-  tracked: true
-  md5: 6fefd907b67e9c3a9378b25a62db2e30
-  size: 2094732972
-  url: null
-- path: zenodo/diadumene_lineata_3_rt.merged.SE.fastq.gz
-  tracked: true
-  md5: 42df7ef5d5925b7f72b344c9b3f90f50
-  size: 1441338500
-  url: null
-- path: zenodo/diadumene_lineata_4_16.merged.SE.fastq.gz
-  tracked: true
-  md5: 5f605046e8d3a54029f6079a83b92870
-  size: 1756631902
-  url: null
 - path: zenodo/diadumene_lineata_3_16.merged.SE.fastq.gz
   tracked: true
   md5: f3f8bcf6a9c105f92553247bac9be491
   size: 1790402827
-  url: null
-- path: zenodo/deseq2_gene_counts.matrix
-  tracked: true
-  md5: 0662dce4eb640dfad170d0d7801f23f4
-  size: 19228192
-  url: null
-- path: zenodo/diadumene_lineata_transcriptome.cdhit.fasta
-  tracked: true
-  md5: 2feb65558af65e0d1e6625165e290bf4
-  size: 250138831
-  url: null
-- path: zenodo/diadumene_lineata_5_rt.merged.SE.fastq.gz
-  tracked: true
-  md5: f40ff8b45c35b8437bd3caed74bb4ec2
-  size: 1455846187
-  url: null
-- path: zenodo/diadumene_lineata_5_16.merged.SE.fastq.gz
-  tracked: true
-  md5: 9237c53f3b179309b1cb179d6fe0952f
-  size: 1880064146
   url: null
 - path: zenodo/diadumenernaseq.sif
   tracked: false
   md5: c76ee8735e55389383824e1b15588d8a
   size: 3306182405
   url: null
-- path: zenodo/diadumene_lineata_6_16.merged.SE.fastq.gz
+- path: zenodo/deseq2_gene_counts.matrix
   tracked: true
-  md5: 0e0bfd0cecad783deaa4f54888c27a02
-  size: 1676967735
-  url: null
-- path: zenodo/diadumene_lineata_7_rt.merged.SE.fastq.gz
-  tracked: true
-  md5: 004cb4bf592afef114a509b74c9a58a1
-  size: 2026013504
+  md5: 9a87c11f2a45b8f37a1c178fbd052291
+  size: 6112105
   url: null
 - path: zenodo/diadumene_lineata_1_rt.merged.SE.fastq.gz
   tracked: true
@@ -69,12 +24,52 @@ files:
   md5: e1e1cb1a13a472c689633f42373cbe24
   size: 1720547373
   url: null
+- path: zenodo/diadumene_lineata_5_rt.merged.SE.fastq.gz
+  tracked: true
+  md5: f40ff8b45c35b8437bd3caed74bb4ec2
+  size: 1455846187
+  url: null
+- path: zenodo/diadumene_lineata_4_16.merged.SE.fastq.gz
+  tracked: true
+  md5: 5f605046e8d3a54029f6079a83b92870
+  size: 1756631902
+  url: null
+- path: zenodo/diadumene_lineata_6_16.merged.SE.fastq.gz
+  tracked: true
+  md5: 0e0bfd0cecad783deaa4f54888c27a02
+  size: 1676967735
+  url: null
+- path: zenodo/diadumene_lineata_transcriptome.cdhit.fasta
+  tracked: true
+  md5: 2feb65558af65e0d1e6625165e290bf4
+  size: 250138831
+  url: null
+- path: zenodo/diadumene_lineata_2_16.merged.SE.fastq.gz
+  tracked: true
+  md5: 6fefd907b67e9c3a9378b25a62db2e30
+  size: 2094732972
+  url: null
+- path: zenodo/diadumene_lineata_3_rt.merged.SE.fastq.gz
+  tracked: true
+  md5: 42df7ef5d5925b7f72b344c9b3f90f50
+  size: 1441338500
+  url: null
+- path: zenodo/diadumene_lineata_5_16.merged.SE.fastq.gz
+  tracked: true
+  md5: 9237c53f3b179309b1cb179d6fe0952f
+  size: 1880064146
+  url: null
+- path: zenodo/diadumene_lineata_7_rt.merged.SE.fastq.gz
+  tracked: true
+  md5: 004cb4bf592afef114a509b74c9a58a1
+  size: 2026013504
+  url: null
 remotes:
-  data: !ZenodoAPI
+  zenodo: !ZenodoAPI
     name: clyde_diadumene_final
     deposition_id: 13536101
     bucket_url: https://zenodo.org/api/files/ed60c4c4-662c-4c2f-9c43-bdeed278b0c6
-  zenodo: !ZenodoAPI
+  data: !ZenodoAPI
     name: clyde_diadumene_final
     deposition_id: 13536101
     bucket_url: https://zenodo.org/api/files/ed60c4c4-662c-4c2f-9c43-bdeed278b0c6
