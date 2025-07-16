@@ -1,5 +1,7 @@
 # About
-This repository contains the scripts associated with the BMC Research Notes xxxx
+This repository contains the scripts associated with the research note "Cool temperature inhibits binary fission and results in phenotypic and transcriptomic changes that suggest inducible aging in *Diadumene lineata*" published in [BMC Research Notes](https://doi.org/10.1186/s13104-025-07378-x).
+
+If you have questions/challenges with the code, open an issue and we will do our best to respond in a timely manner.
 
 ### Citation
 
